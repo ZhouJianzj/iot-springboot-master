@@ -14,6 +14,10 @@ public final class UuidUtil {
         return String.valueOf(orderId);
     }
 
+    /**
+     * 获取全局id
+     * @return
+     */
     public static String getUniqueId() {
         return UUID.randomUUID().toString().replace("-", "");
     }

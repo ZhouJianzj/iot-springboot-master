@@ -106,6 +106,7 @@ public class AccountServiceImpl implements AccountService {
         }
 
         UserToken token = tokenMapper.queryByUserId(account.getUserId());
+        //没有token就生成
         if (token == null) {
             token = new UserToken();
             token.setUserId(account.getUserId());
@@ -114,6 +115,7 @@ public class AccountServiceImpl implements AccountService {
             token.setExpireTime(System.currentTimeMillis() + expireTime);
             tokenMapper.insert(token);
         } else {
+        //有token再次登录就重新整
             token.setLoginTime(new Timestamp(System.currentTimeMillis()));
             token.setToken(UuidUtil.getUniqueId());
             token.setExpireTime(System.currentTimeMillis() + expireTime);
@@ -121,6 +123,7 @@ public class AccountServiceImpl implements AccountService {
         }
         userInfo.setToken(token.getToken());
 
+//        更新账户的登录状态
         account.setLoginStatus(Constant.STATUS_LOGIN);
         accountMapper.updateLoginStatus(account);
         return new ActionResult(Constant.RESULT_SUCC, "登录成功", userInfo);
@@ -174,6 +177,14 @@ public class AccountServiceImpl implements AccountService {
         }
     }
 
+
+    /**
+     * 密码加密
+     * @param text
+     * @param salt
+     * @return
+     * @throws Exception
+     */
     private String cryptoPassword(String text, String salt) throws Exception {
         String orginalText = text + "_" + salt;
         MessageDigest md5 = MessageDigest.getInstance("MD5");

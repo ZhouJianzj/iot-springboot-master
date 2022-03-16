@@ -36,6 +36,7 @@ public class AccountController extends BasicController {
         return fromActionResult(result);
     }
 
+
     @ApiOperation(value = "用户登录")
     @PostMapping("/login")
     @ResponseBody

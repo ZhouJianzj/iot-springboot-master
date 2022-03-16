@@ -41,7 +41,9 @@ public class BasicTokenFilter implements Filter {
 
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+
         long curTime = System.currentTimeMillis();
+
         String url = httpServletRequest.getServletPath();
 
         log.info("查询路径 URL:[{}],请求方法：[{}]", url, httpServletRequest.getMethod());
@@ -53,7 +55,7 @@ public class BasicTokenFilter implements Filter {
                 || StringUtils.contains(url, "api-docs")
                    || StringUtils.contains(url, "register")
                 || StringUtils.contains(url, "test")) {
-            // 没有带token，可以正常访问,带了token ，需要保存用户数据
+            // 没有带token，可以正常访问。          带了token ，需要保存用户数据
             result = doCheckToken(httpServletRequest, httpServletResponse, curTime, true);
         } else {
             result = doCheckToken(httpServletRequest, httpServletResponse, curTime, false);
@@ -73,12 +75,14 @@ public class BasicTokenFilter implements Filter {
         log.info("---destroy BasicTokenFilter---");
     }
 
+
+
     public ActionResult doCheckToken(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,
                                      long curTime, boolean flag) {
-        // 通过数据库，查询数据，是否存在或者过期
+        // 获取token，判断有没有，数据库查询，是否有效，延时token
         String token = httpServletRequest.getHeader("token");
         log.debug("---token is: [{}],flag is:[{}]", token, flag);
-        // 没有带token
+        // 没有带token，有是放行的url
         if (StringUtils.isBlank(token) && flag) {
             return new ActionResult(Constant.RESULT_SUCC, "");
         }
@@ -89,6 +93,7 @@ public class BasicTokenFilter implements Filter {
         try {
             readWriteLock.writeLock().lock();
             UserToken userToken = tokenMapper.selectByToken(token);
+
             if (null != userToken) {
                 log.debug("---token 为空---");
                 if (curTime > userToken.getExpireTime()) {
@@ -101,9 +106,12 @@ public class BasicTokenFilter implements Filter {
                     userToken.setExpireTime(System.currentTimeMillis() + expireTime);
                     tokenMapper.updateByPrimaryKey(userToken);
                     // TODO 设置一个本地线程，保存用户信息
+
+                    return new ActionResult(Constant.RESULT_SUCC, "");
                 }
 
-            } else {
+            }
+            else {
                 // token 不正确，需要重新登录
                 return new ActionResult(Constant.RESULT_FAIL, TOKEN_INVALID);
             }
@@ -113,7 +121,7 @@ public class BasicTokenFilter implements Filter {
                 readWriteLock.writeLock().unlock();
             }
         }
-        return new ActionResult(Constant.RESULT_SUCC, "");
+
     }
 
     /**

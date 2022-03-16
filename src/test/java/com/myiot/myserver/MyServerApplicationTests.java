@@ -7,12 +7,18 @@ import com.myiot.myserver.data.vo.device.ModifyDevice;
 import com.myiot.myserver.mapper.device.DeviceMapper;
 import com.myiot.myserver.mapper.device.SensorMapper;
 import com.myiot.myserver.service.device.impl.DeviceServerImpl;
+import com.myiot.myserver.utils.UuidUtil;
 import com.myiot.myserver.web.device.DeviceController;
+import lombok.extern.slf4j.Slf4j;
+import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.net.SocketTimeoutException;
+
 @SpringBootTest
+@Slf4j
 class MyServerApplicationTests {
 
     @Autowired
@@ -107,5 +113,34 @@ class MyServerApplicationTests {
     void  testaddSensor() {
         Sensor zhoujian = new Sensor(10, "test");
         System.out.println(sensorMapper.addSensor(zhoujian));
+    }
+
+    @Test
+    void testUUIDUtils(){
+
+        log.info(UuidUtil.createDecimalId());
+        log.info("=============================================");
+        log.info(UuidUtil.getUniqueId());
+
+    }
+
+
+    public static void main(String[] args) {
+        System.out.println(test());
+    }
+
+    static String test(){
+        try {
+            if (false){
+                System.out.println("=====ture====");
+                return "ture";
+            }else {
+                System.out.println("=====false====");
+                return "false";
+            }
+        }finally {
+            System.out.println("finally");
+        }
+//        return "false";
     }
 }

@@ -8,6 +8,9 @@ import lombok.Data;
 @Data
 public class ActionResult<T> {
 
+    /**
+     * 控制器的操作结果，是指定的常量
+     */
     private String result;
 
     private String message;
