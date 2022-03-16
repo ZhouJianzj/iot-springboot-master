@@ -12,7 +12,6 @@ public interface SensorMapper {
     List<Sensor> selectSensor();
 
 
-
     @Select("select * from myiot_sensor where name like concat('%',#{name},'%')")
     List<Sensor> selectByName(@Param("name") String name);
 

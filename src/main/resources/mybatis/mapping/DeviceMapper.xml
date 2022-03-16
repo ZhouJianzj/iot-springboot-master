@@ -3,60 +3,57 @@
 <mapper namespace="com.myiot.myserver.mapper.device.DeviceMapper">
 
 
-  <resultMap id="getDevicesMap" type="com.myiot.myserver.data.po.device.DeviceSensor">
-    <id property="id" column="id"/>
-    <result property="deviceName" column="deviceName"/>
-    <collection property="sensors" javaType="java.util.ArrayList" ofType="com.myiot.myserver.data.po.device.Sensor">
-      <id property="id" column="sensorId"/>
-      <id property="name" column="sensorName"/>
-    </collection>
+    <resultMap id="getDevicesMap" type="com.myiot.myserver.data.po.device.DeviceSensor">
+        <id property="id" column="id"/>
+        <result property="deviceName" column="deviceName"/>
+        <collection property="sensors" javaType="java.util.ArrayList" ofType="com.myiot.myserver.data.po.device.Sensor">
+            <id property="id" column="sensorId"/>
+            <id property="name" column="sensorName"/>
+        </collection>
 
-  </resultMap>
+    </resultMap>
 
-  <sql id="selectDeviceAndSensor">
-    SELECT
-      d.id,
-      d.NAME AS deviceName,
-      s.id AS sensorId,
-      s.NAME AS sensorName
-    FROM
-      myiot_device d
-        LEFT JOIN myiot_device_sensor ds ON ds.deviceId = d.id
-        LEFT JOIN myiot_sensor s ON ds.sensorId = s.id
-  </sql>
+    <sql id="selectDeviceAndSensor">
+        SELECT d.id,
+               d.NAME AS deviceName,
+               s.id   AS sensorId,
+               s.NAME AS sensorName
+        FROM myiot_device d
+                 LEFT JOIN myiot_device_sensor ds ON ds.deviceId = d.id
+                 LEFT JOIN myiot_sensor s ON ds.sensorId = s.id
+    </sql>
 
-  <select id="getDevices" resultMap="getDevicesMap">
-   <include refid="selectDeviceAndSensor"></include>
-  </select>
+    <select id="getDevices" resultMap="getDevicesMap">
+        <include refid="selectDeviceAndSensor"></include>
+    </select>
 
-<select id="selectByName" resultMap="getDevicesMap">
-  <include refid="selectDeviceAndSensor"/>
-where d.name like "%"#{name} "%"
-</select>
+    <select id="selectByName" resultMap="getDevicesMap">
+        <include refid="selectDeviceAndSensor"/>
+        where d.name like "%"#{name} "%"
+    </select>
 
 
+    <delete id="deleteDevice">
+        DELETE
+        from myiot_device
+        WHERE id = #{deviceId}
+    </delete>
+
+    <insert id="addDevice" useGeneratedKeys="true" keyColumn="id" keyProperty="id"
+            parameterType="com.myiot.myserver.data.po.device.Device">
+        insert into myiot_device (name)
+        values (#{device.name})
+    </insert>
 
 
-  <delete id="deleteDevice" >
-    DELETE from  myiot_device
-    WHERE
-      id = #{deviceId}
-  </delete>
+    <insert id="addDeviceRelationSensor">
+        insert into myiot_device_sensor ( sensorId, deviceId)
+        values
+        <foreach collection="sensors" separator="," item="sid">
+            (#{sid},#{id})
+        </foreach>
 
-<insert id="addDevice"  useGeneratedKeys="true" keyColumn="id" keyProperty="id" parameterType="com.myiot.myserver.data.po.device.Device">
-  insert into myiot_device (name)  values (#{device.name})
-</insert>
-
-
-  <insert id="addDeviceRelationSensor" >
-    insert into myiot_device_sensor ( sensorId, deviceId)
-    values
-    <foreach collection="sensors" separator="," item="sid" >
-     (#{sid},#{id})
-    </foreach>
-
-  </insert>
-
+    </insert>
 
 
 </mapper>

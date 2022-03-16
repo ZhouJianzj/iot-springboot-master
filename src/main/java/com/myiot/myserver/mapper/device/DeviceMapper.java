@@ -23,6 +23,5 @@ public interface DeviceMapper {
 
     Boolean addDeviceRelationSensor(@Param("id") Integer id, @Param("sensors") String[] sensors);
 
-
     List<DeviceSensor> selectByName(@Param("name") String name);
 }
