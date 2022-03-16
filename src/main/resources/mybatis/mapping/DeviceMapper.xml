@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.myiot.myserver.mapper.device.DeviceMapper">
+
+
+  <resultMap id="getDevicesMap" type="com.myiot.myserver.data.po.device.DeviceSensor">
+    <id property="id" column="id"/>
+    <result property="deviceName" column="deviceName"/>
+    <collection property="sensors" javaType="java.util.ArrayList" ofType="com.myiot.myserver.data.po.device.Sensor">
+      <id property="id" column="sensorId"/>
+      <id property="name" column="sensorName"/>
+    </collection>
+
+  </resultMap>
+
+  <sql id="selectDeviceAndSensor">
+    SELECT
+      d.id,
+      d.NAME AS deviceName,
+      s.id AS sensorId,
+      s.NAME AS sensorName
+    FROM
+      myiot_device d
+        LEFT JOIN myiot_device_sensor ds ON ds.deviceId = d.id
+        LEFT JOIN myiot_sensor s ON ds.sensorId = s.id
+  </sql>
+
+  <select id="getDevices" resultMap="getDevicesMap">
+   <include refid="selectDeviceAndSensor"></include>
+  </select>
+
+<select id="selectByName" resultMap="getDevicesMap">
+  <include refid="selectDeviceAndSensor"/>
+where d.name like "%"#{name} "%"
+</select>
+
+
+
+
+  <delete id="deleteDevice" >
+    DELETE from  myiot_device
+    WHERE
+      id = #{deviceId}
+  </delete>
+
+<insert id="addDevice"  useGeneratedKeys="true" keyColumn="id" keyProperty="id" parameterType="com.myiot.myserver.data.po.device.Device">
+  insert into myiot_device (name)  values (#{device.name})
+</insert>
+
+
+  <insert id="addDeviceRelationSensor" >
+    insert into myiot_device_sensor ( sensorId, deviceId)
+    values
+    <foreach collection="sensors" separator="," item="sid" >
+     (#{sid},#{id})
+    </foreach>
+
+  </insert>
+
+
+
+</mapper>

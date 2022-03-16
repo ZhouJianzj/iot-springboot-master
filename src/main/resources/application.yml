@@ -1,0 +1,30 @@
+
+YOUR_SQL_IP: localhost
+YOUR_SERVER_PORTAL: 9011
+YOUR_SQL_USERNAME: root
+YOUR_SQL_PASSWORD: 123321
+YOUR_EXPIRE_TIME: 36000000000000
+#数据库IP地址
+mysql.ip: ${YOUR_SQL_IP}
+
+#服务端口
+server:
+  port: ${YOUR_SERVER_PORTAL}
+
+
+spring:
+  datasource:
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${mysql.ip}:3306/my_iot?characterEncoding=UTF-8&allowMultiQueries=true
+    #数据库用户名
+    username: ${YOUR_SQL_USERNAME}
+    #数据库密码
+    password: ${YOUR_SQL_PASSWORD}
+
+mybatis:
+  mapperLocations: classpath:mybatis/mapping/*Mapper.xml
+  config-location: classpath:mybatis/mybatis-config.xml
+
+#用户TOKEN的有效期
+website:
+  expireTime: ${YOUR_EXPIRE_TIME}
