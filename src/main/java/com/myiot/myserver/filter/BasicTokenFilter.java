@@ -102,7 +102,7 @@ public class BasicTokenFilter implements Filter {
                     //重定向
                     return new ActionResult(Constant.RESULT_FAIL, TOKEN_EXPIRE);
                 } else {
-                    // 否则，更新token时间
+                    // 只要有操作就会自动的续签
                     userToken.setExpireTime(System.currentTimeMillis() + expireTime);
                     tokenMapper.updateByPrimaryKey(userToken);
                     // TODO 设置一个本地线程，保存用户信息

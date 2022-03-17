@@ -82,6 +82,11 @@ public class AccountServiceImpl implements AccountService {
         }
     }
 
+    /**
+     * 登录可改 实现多人一个账户在线，还需要在修改账户信息的时候跟新token有效时间范围
+     * @param request
+     * @return
+     */
     @Override
     public ActionResult login(RegisterRequest request) {
         Account account = accountMapper.findByName(request.getAccountName());
@@ -115,11 +120,22 @@ public class AccountServiceImpl implements AccountService {
             token.setExpireTime(System.currentTimeMillis() + expireTime);
             tokenMapper.insert(token);
         } else {
+
+//           一个账户一个人在线
         //有token再次登录就重新整
             token.setLoginTime(new Timestamp(System.currentTimeMillis()));
             token.setToken(UuidUtil.getUniqueId());
             token.setExpireTime(System.currentTimeMillis() + expireTime);
             tokenMapper.updateByPrimaryKey(token);
+
+//            一个账户多人在线
+//            long curTime = System.currentTimeMillis();
+//            if (curTime > token.getExpireTime()){
+//                token.setLoginTime(new Timestamp(System.currentTimeMillis()));
+//                token.setToken(UuidUtil.getUniqueId());
+//                token.setExpireTime(System.currentTimeMillis() + expireTime);
+//                tokenMapper.updateByPrimaryKey(token);
+//            }
         }
         userInfo.setToken(token.getToken());
 
@@ -129,6 +145,11 @@ public class AccountServiceImpl implements AccountService {
         return new ActionResult(Constant.RESULT_SUCC, "登录成功", userInfo);
     }
 
+    /**
+     * 重置密码 123456
+     * @param userId
+     * @return
+     */
     @Override
     public ActionResult resetPassword(String userId) {
         Account account = accountMapper.selectByPrimaryKey(userId);
