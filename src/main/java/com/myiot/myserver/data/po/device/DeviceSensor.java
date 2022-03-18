@@ -13,6 +13,6 @@ import java.util.List;
 public class DeviceSensor implements Serializable {
     private Integer id;
     private String  deviceName;
-    private List<SensorT> sensors;
+    private List<SensorT> sensorsT;
 
 }

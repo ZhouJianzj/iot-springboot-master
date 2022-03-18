@@ -6,7 +6,7 @@
     <resultMap id="getDevicesMap" type="com.myiot.myserver.data.po.device.DeviceSensor">
         <id property="id" column="id"/>
         <result property="deviceName" column="deviceName"/>
-        <collection property="sensors" javaType="java.util.ArrayList" ofType="com.myiot.myserver.data.po.device.SensorT">
+        <collection property="sensorsT" javaType="java.util.ArrayList" ofType="com.myiot.myserver.data.po.device.SensorT">
             <result property="sensorId" column="sensorId"/>
             <result property="name" column="sensorName"/>
         </collection>
