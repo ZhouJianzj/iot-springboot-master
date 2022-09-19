@@ -117,6 +117,7 @@ public class BasicTokenFilter implements Filter {
             }
 
         } finally {
+
             if (readWriteLock.isWriteLocked()) {
                 readWriteLock.writeLock().unlock();
             }

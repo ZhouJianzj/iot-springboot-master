@@ -1,6 +1,8 @@
 
 YOUR_SQL_IP: localhost
 YOUR_SERVER_PORTAL: 9011
+#YOUR_SQL_USERNAME: xiot
+#YOUR_SQL_PASSWORD: Xiot@mariadb_2018
 YOUR_SQL_USERNAME: root
 YOUR_SQL_PASSWORD: 123321
 YOUR_EXPIRE_TIME: 36000000000000
@@ -15,7 +17,7 @@ server:
 spring:
   datasource:
     driverClassName: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://${mysql.ip}:3306/my_iot?characterEncoding=UTF-8&allowMultiQueries=true
+    url: jdbc:mysql://${mysql.ip}:3306/iot_springboot_master?characterEncoding=UTF-8&allowMultiQueries=true
     #数据库用户名
     username: ${YOUR_SQL_USERNAME}
     #数据库密码
